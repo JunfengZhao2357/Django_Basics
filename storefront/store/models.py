@@ -21,8 +21,9 @@ class Product(models.Model):
     # if we don't explicitly write the primary key, 
     # Django will automatically create an ID as the primary key.
     title = models.CharField(max_length=255)
+    slug = models.SlugField()
     description = models.TextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
     # auto_now will update the time every time in model
     last_update = models.DateTimeField(auto_now=True)
