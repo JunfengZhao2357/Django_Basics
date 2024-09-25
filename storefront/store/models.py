@@ -10,6 +10,11 @@ class Promotion(models.Model):
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
+    # This is a way to solve circular dependency
+    # use string Product instead of class Product
+    # add related_name="+" to resolve it
+    featured_product = models.ForeignKey('Product', on_delete=models.SET_NULL, 
+                                         null=True, related_name="+")
     
     
 class Product(models.Model):
