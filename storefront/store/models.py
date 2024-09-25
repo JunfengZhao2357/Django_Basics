@@ -1,6 +1,12 @@
 from django.db import models
 
 # Create your models here.
+class Promotion(models.Model):
+    description = models.CharField(max_length=255)
+    discount = models.FloatField()
+    # we don't need to add product here since 
+    # in Product class we already define the many to many relationship
+    # so Django will create the product field in Promotion automatically
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
@@ -16,6 +22,7 @@ class Product(models.Model):
     # auto_now will update the time every time in model
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
+    promotions = models.ManyToManyField(Promotion)
 
   
 class Customer(models.Model):
