@@ -2,6 +2,10 @@ from django.db import models
 
 # Create your models here.
 
+class Collection(models.Model):
+    title = models.CharField(max_length=255)
+    
+    
 class Product(models.Model):
     # if we don't explicitly write the primary key, 
     # Django will automatically create an ID as the primary key.
@@ -11,6 +15,7 @@ class Product(models.Model):
     inventory = models.IntegerField()
     # auto_now will update the time every time in model
     last_update = models.DateTimeField(auto_now=True)
+    collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
 
   
 class Customer(models.Model):
@@ -43,12 +48,30 @@ class Order(models.Model):
     # auto_now_add will create the timestamp automatically at the first time
     placed_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
+    # on_delete=models.PROTECT means if the customer is deleted, the order won't be deleted.
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
     
-
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveSmallIntegerField()
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2) 
+    
+    
 class Address(models.Model):
     street = models.CharField(max_length=255)  
     city = models.CharField(max_length=255)  
     # Customer should be the primary key for Address
     # and Address to Customer is the one to one relationship
     # on_delete=models.CASCADE means if customer deleted, the address will be deleted too
-    customer =  models.OneToOneField(Customer, on_delete=models.CASCADE, primary_key=True)
+    customer =  models.ForeignKey(Customer, on_delete=models.CASCADE)
+
+
+class Cart(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField()
