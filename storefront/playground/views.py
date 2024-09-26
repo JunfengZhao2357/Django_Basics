@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.db.models import Value
-from django.db.models import Q, F, Func, Count
+from django.db.models import Value, DecimalField
+from django.db.models import Q, F, Func, Count, ExpressionWrapper
 from django.db.models.functions import Concat
 from django.http import HttpResponse
 from store.models import Product, OrderItem, Customer
@@ -10,13 +10,19 @@ from store.models import Product, OrderItem, Customer
 # Handle request and send response
 
 def say_hello(request):
+    # Expression wrapper
+    discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
+    query_set = Product.objects.annotate(
+        discount_price=discounted_price
+    )
+    
     # Grouing data
     # in customer model, we don't have the order field 
     # but in order model, customer is a foreign key
     # then in customer table, the 'order' will be used as a field in Django
-    query_set = Customer.objects.annotate(
-        orders_count=Count('order')
-    )
+    # query_set = Customer.objects.annotate(
+    #     orders_count=Count('order')
+    # )
     
     
     # Calling DataBase function
