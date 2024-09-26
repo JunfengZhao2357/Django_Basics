@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Value
-from django.db.models import Q, F
+from django.db.models import Q, F, Func
+from django.db.models.functions import Concat
 from django.http import HttpResponse
 from store.models import Product, OrderItem, Customer
 
@@ -9,8 +10,20 @@ from store.models import Product, OrderItem, Customer
 # Handle request and send response
 
 def say_hello(request):
+    # Calling DataBase function
+    query_set = Customer.objects.annotate(
+        # CONCAT
+        full_name=Func(F('first_name'), Value(' '), F('last_name'), function='CONCAT')
+    )
+    # using Django database functions to achieve this
+    query_set = Customer.objects.annotate(
+        # CONCAT
+        full_name=Concat('first_name', Value(' '), 'last_name')
+    )
+    
+    
     # Annotate a Object
-    query_set = Customer.objects.annotate(new_id=F('id') + 1)
+    # query_set = Customer.objects.annotate(new_id=F('id') + 1)
     
     # Select exact fields only in the Query
     # Select products that have been ordered and sort them by title
