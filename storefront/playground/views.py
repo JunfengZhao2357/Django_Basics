@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.db.models import Q
+from django.db.models import Q, F
 from django.http import HttpResponse
 from store.models import Product
 
@@ -8,10 +8,14 @@ from store.models import Product
 # Handle request and send response
 
 def say_hello(request):
+    # compare for two fields:
+    # Products: inventory = price
+    query_set = Product.objects.filter(inventory=F('unit_price'))
+    
     # Products: inventory < 10 AND price < 20
     # query_set = Product.objects.filter(inventory__lt=10, unit_price__lt=20)
     # Products: inventory < 10 OR price < 20, we need to use Q object to realize 'OR'
-    query_set = Product.objects.filter(Q(inventory__lt=10) | Q(unit_price__lt=20))
+    # query_set = Product.objects.filter(Q(inventory__lt=10) | Q(unit_price__lt=20))
     # Q and: Q(inventory__lt=10) & Q(unit_price__lt=20)
     # not Q: ~Q(inventory__lt=10)
     
