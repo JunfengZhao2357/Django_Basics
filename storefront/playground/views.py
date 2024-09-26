@@ -1,16 +1,20 @@
 from django.shortcuts import render
+from django.db.models import Value
 from django.db.models import Q, F
 from django.http import HttpResponse
-from store.models import Product, OrderItem
+from store.models import Product, OrderItem, Customer
 
 
 # Create your views here.
 # Handle request and send response
 
 def say_hello(request):
+    # Annotate a Object
+    query_set = Customer.objects.annotate(new_id=F('id') + 1)
+    
     # Select exact fields only in the Query
     # Select products that have been ordered and sort them by title
-    query_set = Product.objects.filter(id__in=OrderItem.objects.values('product_id').distinct()).order_by('title')
+    # query_set = Product.objects.filter(id__in=OrderItem.objects.values('product_id').distinct()).order_by('title')
     
     
     # Limit result:
