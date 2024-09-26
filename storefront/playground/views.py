@@ -3,18 +3,24 @@ from django.db.models import Value, DecimalField
 from django.db.models import Q, F, Func, Count, ExpressionWrapper
 from django.db.models.functions import Concat
 from django.http import HttpResponse
-from store.models import Product, OrderItem, Customer
+from store.models import Product, OrderItem, Customer, Collection
 
 
 # Create your views here.
 # Handle request and send response
 
 def say_hello(request):
+    # Create objects (Insert data into DB)
+    collection = Collection()
+    collection.title = 'Video Games'
+    collection.featured_product = Product(pk=1)
+    collection.save()
+    
     # Expression wrapper
-    discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
-    query_set = Product.objects.annotate(
-        discount_price=discounted_price
-    )
+    # discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
+    # query_set = Product.objects.annotate(
+    #     discount_price=discounted_price
+    # )
     
     # Grouing data
     # in customer model, we don't have the order field 
@@ -79,4 +85,4 @@ def say_hello(request):
     # we can also filter the all query set 
     # eg, 
     # filtered_set = query_set.filter().filter().order_by()
-    return render(request, 'hello.html', {'name': 'Junfeng', 'products': list(query_set)})
+    return render(request, 'hello.html', {'name': 'Junfeng'})
