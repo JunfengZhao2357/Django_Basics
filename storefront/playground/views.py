@@ -1,16 +1,21 @@
 from django.shortcuts import render
 from django.db.models import Q, F
 from django.http import HttpResponse
-from store.models import Product
+from store.models import Product, OrderItem
 
 
 # Create your views here.
 # Handle request and send response
 
 def say_hello(request):
+    # Select exact fields only in the Query
+    # Select products that have been ordered and sort them by title
+    query_set = Product.objects.filter(id__in=OrderItem.objects.values('product_id').distinct()).order_by('title')
+    
+    
     # Limit result:
     # 5, 6, 7, 8, 9
-    query_set = Product.objects.all()[5:10]
+    # query_set = Product.objects.all()[5:10]
     
     # Sorting
     # Sort the unit price in the ASC order , if there are same ones, sort the title in DSC
