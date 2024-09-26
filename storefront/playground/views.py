@@ -8,9 +8,15 @@ from store.models import Product
 # Handle request and send response
 
 def say_hello(request):
+    # Sorting
+    # Sort the unit price in the ASC order , if there are same ones, sort the title in DSC
+    # and then reverse the result
+    query_set = Product.objects.order_by('unit_price', '-title').reverse()
+    
+    
     # compare for two fields:
     # Products: inventory = price
-    query_set = Product.objects.filter(inventory=F('unit_price'))
+    # query_set = Product.objects.filter(inventory=F('unit_price'))
     
     # Products: inventory < 10 AND price < 20
     # query_set = Product.objects.filter(inventory__lt=10, unit_price__lt=20)
