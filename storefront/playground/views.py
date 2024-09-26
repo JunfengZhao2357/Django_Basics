@@ -10,11 +10,23 @@ from store.models import Product, OrderItem, Customer, Collection
 # Handle request and send response
 
 def say_hello(request):
-    # Create objects (Insert data into DB)
-    collection = Collection()
-    collection.title = 'Video Games'
-    collection.featured_product = Product(pk=1)
+    # Update objects (update data in DB)
+    collection = Collection.objects.get(pk=11)
+    # we can't use collection = Collection(pk=11) 
+    # since in this way, if we don't update title
+    # Django will give title an empty value bu default
+    collection.featured_product = None
     collection.save()
+    
+    # Second method  faster one
+    Collection.objects.filter(pk=11).update(featured_product=None)
+    
+    
+    # Create objects (Insert data into DB)
+    # collection = Collection()
+    # collection.title = 'Video Games'
+    # collection.featured_product = Product(pk=1)
+    # collection.save()
     
     # Expression wrapper
     # discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
